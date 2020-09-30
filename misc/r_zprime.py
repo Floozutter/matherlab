@@ -39,8 +39,11 @@ def main(x_filename: str, y_filename: str) -> None:
 	y = read_file(y_filename)
 	assert len(x) == len(y), "Variables aren't paired! (Different sizes.)"
 	r = spcc(x, y)
-	z_prime = modified_fisher_transform(r, len(x))
-	print(f"{r} {z_prime}")
+	if -1 < r < 1:
+		z_prime = modified_fisher_transform(r, len(x))
+		print(f"{r} {z_prime}")
+	else:
+		print(f"{r} None")
 
 def parse_args() -> Tuple[str, str]:
 	parser = ArgumentParser(
