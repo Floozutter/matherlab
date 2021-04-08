@@ -5,6 +5,7 @@ reformats NIH data in Excel-tab formatted csv files
 from csv import DictReader, DictWriter
 from argparse import ArgumentParser
 from sys import exit
+from collections import defaultdict
 from enum import Enum
 from typing import Sequence, Iterable
 
@@ -12,7 +13,6 @@ Fieldnames = Sequence[str]
 Row = dict[str, str]
 
 class Kind(Enum):
-    FIELDNAME = "type"
     INSTRUCTION = "instruction"
     PRACTICE = "practice"
     MAIN = "main"
@@ -40,6 +40,9 @@ def kind(row: Row) -> Kind:
     else:
         raise AssertionError(f"invalid inst `{inst}`!")
 
+def datestring(row: Row) -> str:
+    return next(iter(row["DateCreated"].split()))
+
 def read(infilename: str) -> tuple[Fieldnames, list[Row]]:
     with open(infilename, "r", newline = "") as ifile:
         reader = DictReader(ifile, dialect = "excel-tab")
@@ -61,9 +64,22 @@ def parse_args() -> tuple[str, str]:
 
 def main(infilename: str, outfilename: str) -> int:
     prefieldnames, data = read(infilename)
-    postfieldnames = tuple(prefieldnames) + (Kind.FIELDNAME.value,)
+    postfieldnames = tuple(prefieldnames) + ("type", "day")
+    # add type kind to each row
     for row in data:
-        row[Kind.FIELDNAME.value] = str(kind(row).value)
+        row["type"] = str(kind(row).value)
+    # find dates per participant
+    id_to_dateset: dict[str, set[str]] = defaultdict(set)
+    for row in data:
+        id_to_dateset[row["subID"]].add(datestring(row))
+    # find day per date per participant
+    id_to_daydict: dict[str, dict[str, int]] = {
+        id: {date: index for index, date in enumerate(dateset)}
+        for id, dateset in id_to_dateset.items()
+    }
+    # add day to each row
+    for row in data:
+        row["day"] = str(id_to_daydict[row["subID"]][datestring(row)])
     write(outfilename, postfieldnames, data)
     return 0
 
