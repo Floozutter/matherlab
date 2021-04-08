@@ -43,7 +43,7 @@ def get_kind(row: Row) -> Kind:
 
 def get_date(row: Row) -> date:
     datestring, _ = row["DateCreated"].split()
-    return datetime.strptime(datestring, "%m/%d/%Y").date()
+    return datetime.strptime(datestring, "%m/%d/%y").date()
 
 def read(infilename: str) -> tuple[Fieldnames, list[Row]]:
     with open(infilename, "r", newline = "") as ifile:
