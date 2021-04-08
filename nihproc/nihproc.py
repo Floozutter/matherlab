@@ -76,7 +76,7 @@ def main(infilename: str, outfilename: str) -> int:
         id_to_dateset[row["subID"]].add(datestring(row))
     # find day per date per participant
     id_to_daydict: dict[str, dict[str, int]] = {
-        id: {date: index for index, date in enumerate(dateset)}
+        id: {date: index for index, date in enumerate(sorted(dateset))}
         for id, dateset in id_to_dateset.items()
     }
     # add day to each row
