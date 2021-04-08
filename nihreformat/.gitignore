@@ -1,0 +1,14 @@
+# byte-compiled / optimized / DLL
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Mypy
+.mypy_cache/
+.dmypy.json
+dmypy.json
+
+# i/o
+*.csv
+*.tsv
+*.xlsx
