@@ -5,6 +5,7 @@ process NIH data in Excel-tab formatted csv files to add `type` and `day` column
 from csv import DictReader, DictWriter
 from argparse import ArgumentParser
 from sys import exit
+from datetime import datetime, date
 from collections import defaultdict
 from enum import Enum
 from typing import Sequence, Iterable
@@ -17,7 +18,7 @@ class Kind(Enum):
     PRACTICE = "practice"
     MAIN = "main"
 
-def kind(row: Row) -> Kind:
+def get_kind(row: Row) -> Kind:
     inst = row["inst"]
     itemID = row["itemID"]
     if inst == "NIH Toolbox List Sorting Working Memory Test Age 7+ v2.1":
@@ -40,8 +41,9 @@ def kind(row: Row) -> Kind:
     else:
         raise AssertionError(f"invalid inst `{inst}`!")
 
-def datestring(row: Row) -> str:
-    return next(iter(row["DateCreated"].split()))
+def get_date(row: Row) -> date:
+    datestring, _ = row["DateCreated"].split()
+    return datetime.strptime(datestring, "%m/%d/%Y").date()
 
 def read(infilename: str) -> tuple[Fieldnames, list[Row]]:
     with open(infilename, "r", newline = "") as ifile:
@@ -69,19 +71,19 @@ def main(infilename: str, outfilename: str) -> int:
     postfieldnames = tuple(prefieldnames) + ("type", "day")
     # add type kind to each row
     for row in data:
-        row["type"] = str(kind(row).value)
+        row["type"] = str(get_kind(row).value)
     # find dates per participant
-    id_to_dateset: dict[str, set[str]] = defaultdict(set)
+    id_to_dateset: dict[str, set[date]] = defaultdict(set)
     for row in data:
-        id_to_dateset[row["subID"]].add(datestring(row))
+        id_to_dateset[row["subID"]].add(get_date(row))
     # find day per date per participant
-    id_to_daydict: dict[str, dict[str, int]] = {
+    id_to_daydict: dict[str, dict[date, int]] = {
         id: {date: index for index, date in enumerate(sorted(dateset))}
         for id, dateset in id_to_dateset.items()
     }
     # add day to each row
     for row in data:
-        row["day"] = str(id_to_daydict[row["subID"]][datestring(row)])
+        row["day"] = str(id_to_daydict[row["subID"]][get_date(row)])
     # write csv file
     write(outfilename, postfieldnames, data)
     return 0
