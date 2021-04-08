@@ -1,5 +1,5 @@
 """
-reformats NIH data in Excel-tab formatted csv files
+process NIH data in Excel-tab formatted csv files to add `type` and `day` columns
 """
 
 from csv import DictReader, DictWriter
@@ -63,7 +63,9 @@ def parse_args() -> tuple[str, str]:
     return args.infilename, args.outfilename
 
 def main(infilename: str, outfilename: str) -> int:
+    # read csv file
     prefieldnames, data = read(infilename)
+    # prepare new fieldnames
     postfieldnames = tuple(prefieldnames) + ("type", "day")
     # add type kind to each row
     for row in data:
@@ -80,6 +82,7 @@ def main(infilename: str, outfilename: str) -> int:
     # add day to each row
     for row in data:
         row["day"] = str(id_to_daydict[row["subID"]][datestring(row)])
+    # write csv file
     write(outfilename, postfieldnames, data)
     return 0
 
