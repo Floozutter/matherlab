@@ -11,18 +11,19 @@ from sys import exit
 from re import compile, Match
 from typing import NamedTuple, Optional
 
-# summary patterns
+# patterns
+## summary
 P_VERSION = compile(r"MRIQC version:\s*(.*)\s*\.")
 P_SUBJECTID = compile(r"Subject ID:\s*(.*)\s*\.")
 P_BIDSFILENAME = compile(r"BIDS filename:\s*(.*)\s*\.")
-# image quality metrics table patterns
-## task-rest
+## image quality metrics table
+### task-rest
 P_TSNR = compile(r"<tr>(?:(?!<tr)[\s\S])*tsnr(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
 P_FD_MEAN = compile(r"<tr>(?:(?!<tr)[\s\S])*fd(?:(?!<tr)[\s\S])*mean(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>\s*<\/tr>")
 P_GCOR = compile(r"<tr>(?:(?!<tr)[\s\S])*gcor(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
 P_GSR_X = compile(r"<tr>(?:(?!<tr)[\s\S])*gsr(?:(?!<tr)[\s\S])*x(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>\s*<\/tr>")
 P_GSR_Y = compile(r"<tr>(?:(?!<tr)[\s\S])*gsr(?:(?!<tr)[\s\S])*y(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>\s*<\/tr>")
-## anat-wholebrain
+### anat-wholebrain
 P_CJV = compile(r"<tr>(?:(?!<tr)[\s\S])*cjv(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
 P_CNR = compile(r"<tr>(?:(?!<tr)[\s\S])*cnr(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
 P_EFC = compile(r"<tr>(?:(?!<tr)[\s\S])*efc(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
