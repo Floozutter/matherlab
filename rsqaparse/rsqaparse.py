@@ -105,7 +105,9 @@ class WholebrainRow(NamedTuple):
         # parse from html
         text = filepath.read_text()
         version = unwrap(P_VERSION.search(text)).group(1)
-        if version == "0.15.1":
+        if version == "0.11.0":
+            special = unwrap(P_SUBJECTID.search(text)).group(1)
+        elif version == "0.15.1":
             special = unwrap(P_BIDSFILENAME.search(text)).group(1)
         else:
             raise ValueError(f"unexpected version `{version}`")
