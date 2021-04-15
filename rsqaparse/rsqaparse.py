@@ -8,15 +8,23 @@ from csv import DictWriter
 from pathlib import Path
 from argparse import ArgumentParser
 from sys import exit
-from re import compile, VERBOSE
-from typing import NamedTuple
+from re import compile, Match
+from typing import NamedTuple, Optional
 
 P_VERSION = compile(r"MRIQC version:\s*(.*)\s*\.")
 P_SUBJECTID = compile(r"Subject ID:\s*(.*)\s*\.")
 P_BIDSFILENAME = compile(r"BIDS filename:\s*(.*)\s*\.")
-#P_TSNR = compile(r"<tr>(?:(?!<tr)[\s\S])*tsnr(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
-#P_TSNR = compile(r"<tr>(?:(?!<tr)[\s\S])*tsnr(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>\s*<\/tr>")
-#P_TSNR = compile(r"<tr>(?:(?!<tr)[\s\S])*tsnr[\s\S]*?<td>\s*(.*)\s*<\/td>\s*<\/tr>")
+P_TSNR = compile(r"<tr>(?:(?!<tr)[\s\S])*tsnr(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
+P_FD_MEAN = compile(r"<tr>(?:(?!<tr)[\s\S])*fd(?:(?!<tr)[\s\S])*mean(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>\s*<\/tr>")
+P_GCOR = compile(r"<tr>(?:(?!<tr)[\s\S])*gcor(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>(?:(?!<tr)[\s\S])*<\/tr>")
+P_GSR_X = compile(r"<tr>(?:(?!<tr)[\s\S])*gsr(?:(?!<tr)[\s\S])*x(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>\s*<\/tr>")
+P_GSR_Y = compile(r"<tr>(?:(?!<tr)[\s\S])*gsr(?:(?!<tr)[\s\S])*y(?:(?!<tr)[\s\S])*<td>\s*(.*)\s*<\/td>\s*<\/tr>")
+
+def unwrap(maybematch: Optional[Match]) -> Match:
+    if maybematch is None:
+        raise AssertionError("match not found")
+    else:
+        return maybematch
 
 class RestRow(NamedTuple):
     source: str
@@ -38,14 +46,18 @@ class RestRow(NamedTuple):
         subject, session, acquisition, kind, *_ = filepath.stem.split("_")
         # parse from html
         text = filepath.read_text()
-        version = P_VERSION.search(text).group(1)
+        version = unwrap(P_VERSION.search(text)).group(1)
         if version == "0.11.0":
-            special = P_SUBJECTID.search(text).group(1)
+            special = unwrap(P_SUBJECTID.search(text)).group(1)
         elif version == "0.15.1":
-            special = P_BIDSFILENAME.search(text).group(1)
+            special = unwrap(P_BIDSFILENAME.search(text)).group(1)
         else:
-            raise ValueError(f"unexpected vesion `{version}`!")
-        tsnr = P_TSNR.search(text).group(1)
+            raise ValueError(f"unexpected version `{version}`")
+        tsnr = unwrap(P_TSNR.search(text)).group(1)
+        fd_mean = unwrap(P_FD_MEAN.search(text)).group(1)
+        gcor = unwrap(P_GCOR.search(text)).group(1)
+        gsr_x = unwrap(P_GSR_X.search(text)).group(1)
+        gsr_y = unwrap(P_GSR_Y.search(text)).group(1)
         # instantiate and return
         return cls(
             source = source,
@@ -81,7 +93,7 @@ class WholebrainRow(NamedTuple):
         source = filepath.as_posix()
         subject, session, acquisition, kind, *_ = filepath.stem.split("_")
         # parse from html
-        version = ...
+        text = filepath.read_text()
         # instantiate and return
         return cls(...)
 
@@ -97,7 +109,7 @@ def main(root: str, out_rest: str, out_wholebrain) -> int:
     # read
     files = tuple(sorted(Path(root).rglob("*.html")))
     rest = tuple(RestRow.from_file(f) for f in files if "task-rest" in f.name)
-    wholebrain = tuple(WholebrainRow.from_file(f) for f in files if "anat-wholebrain" in f.name)
+    wholebrain = tuple(WholebrainRow.from_file(f) for f in files if "anat-wholebrain" in f.name and False)
     # write
     with open(out_rest, "w", newline = "") as ofile:
         writer = DictWriter(ofile, fieldnames = RestRow._fields, dialect = "excel-tab")
