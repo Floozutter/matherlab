@@ -2,7 +2,7 @@
 parses data from HTML files in RS_qa
 """
 
-#from __future__ import annotations
+from __future__ import annotations
 
 from csv import DictWriter
 from pathlib import Path
