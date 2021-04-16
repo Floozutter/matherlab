@@ -35,6 +35,7 @@ P_GSR_Y = table_pattern("gsr", "y")
 P_CJV = table_pattern("cjv")
 P_CNR = table_pattern("cnr")
 P_EFC = table_pattern("efc")
+P_INU_MED = table_pattern("inu", "med")
 P_WM_MEDIAN = table_pattern("summary", "wm", "median")
 P_WM2MAX = table_pattern("wm2max")
 
@@ -103,6 +104,7 @@ class WholebrainRow(NamedTuple):
     cjv: str
     cnr: str
     efc: str
+    inu_med: str
     wm_median: str
     wm2max: str
     @classmethod
@@ -122,6 +124,7 @@ class WholebrainRow(NamedTuple):
         cjv = unwrap(P_CJV.search(text)).group(1)
         cnr = unwrap(P_CNR.search(text)).group(1)
         efc = unwrap(P_EFC.search(text)).group(1)
+        inu_med = unwrap(P_INU_MED.search(text)).group(1)
         wm_median = unwrap(P_WM_MEDIAN.search(text)).group(1)
         wm2max = unwrap(P_WM2MAX.search(text)).group(1)
         # instantiate and return
@@ -136,6 +139,7 @@ class WholebrainRow(NamedTuple):
             cjv = cjv,
             cnr = cnr,
             efc = efc,
+            inu_med = inu_med,
             wm_median = wm_median,
             wm2max = wm2max
         )
