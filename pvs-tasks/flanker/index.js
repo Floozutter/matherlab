@@ -6,7 +6,7 @@ const preload = {
 const introduction = {
     type: "html-keyboard-response",
     stimulus: `
-        Welcome to Flanker Task A, made with jsPsych. <br>
+        Welcome to the Flanker Task, made with jsPsych. <br>
         <i>Press any key to continue.</i>
     `
 };
