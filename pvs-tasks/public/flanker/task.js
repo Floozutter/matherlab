@@ -3,10 +3,12 @@ fragload(new Map([
     ["introduction", "frag/introduction.html"],
     ["instruction", "frag/instruction.html"],
     ["completion", "frag/completion.html"],
-])).then((fs) => {
-    fragments = fs;
+])).then(frags => {
+    fragments = frags;
     init();
-})
+}).catch(error => {
+    document.body.textContent = `Error: failed to load HTML fragments! (${error})`;
+});
 
 const preload = {
     type: "preload",
