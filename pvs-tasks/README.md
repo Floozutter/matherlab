@@ -7,4 +7,4 @@ To view all tasks, first, start the server:
 npm install
 npm start
 ```
-Then, go to [localhost:3000]().
+Then, go to [](localhost:3000).
