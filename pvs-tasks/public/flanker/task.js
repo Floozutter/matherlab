@@ -1,8 +1,8 @@
 let fragments;
 fragload(new Map([
-    ["introduction", "fragments/introduction.html"],
-    ["instruction", "fragments/instruction.html"],
-    ["completion", "fragments/completion.html"],
+    ["introduction", "frag/introduction.html"],
+    ["instruction", "frag/instruction.html"],
+    ["completion", "frag/completion.html"],
 ])).then((fs) => {
     fragments = fs;
     init();
