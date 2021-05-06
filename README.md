@@ -1,2 +1,2 @@
 # matherlab
-Scripts and such for USC's Emotion &amp; Cognition Lab
+scripts and such for USC's Emotion and Cognition Lab!
