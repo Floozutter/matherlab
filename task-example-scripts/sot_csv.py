@@ -27,5 +27,6 @@ with open(OUTPUT_CSV_PATH, "w") as csvfile:
     )
     writer.writeheader()
     for trial in timeline:
-        if trial.get("trial_type") == "spatial-orientation" and trial.get("isRelevant", False):
+        if trial.get("isRelevant", False):
+            assert trial.get("trial_type") == "spatial-orientation"
             writer.writerow(trial)
