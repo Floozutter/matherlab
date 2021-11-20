@@ -2,7 +2,7 @@ import json
 import csv
 
 MOOD_DATA_PATH = "example-data/mood-prediction.json"
-OUTPUT_CSV_PATH = "mood-prediction.csv"
+OUTPUT_CSV_PATH = "output-csv/mood-prediction.csv"
 
 with open(MOOD_DATA_PATH) as datafile:
     datatext = datafile.read()

@@ -2,7 +2,7 @@ import json
 import csv
 
 SPATIAL_ORIENTATION_DATA_PATH = "example-data/spatial-orientation.json"
-OUTPUT_CSV_PATH = "spatial-orientation.csv"
+OUTPUT_CSV_PATH = "output-csv/spatial-orientation.csv"
 
 with open(SPATIAL_ORIENTATION_DATA_PATH) as datafile:
     datatext = datafile.read()
