@@ -1,0 +1,24 @@
+body {
+    background-color: Beige;
+}
+
+canvas {
+    background-color: MintCream;
+}
+
+#demo-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#demo-canvas {
+    display: block;
+    margin: 50px;
+}
+
+#demo-button {
+    display: block;
+    font-size: 16px;
+}
