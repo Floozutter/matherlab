@@ -46,13 +46,13 @@ with open(OUTPUT_CSV_PATH, "w") as csvfile:
     for trial in timeline:
         if trial.get("isRelevant", False):
             assert trial.get("trial_type") == "survey-likert"
-            # start row as an empty dictionary
-            row = {}
-            # add some of the key-value pairs in trial to row
-            row["trial_type"] = trial["trial_type"]
-            row["isRelevant"] = trial["isRelevant"]
-            row["dateTime"] = trial["dateTime"]
-            row["rt"] = trial["rt"]
+            # start row with some of the key-value pairs in trial
+            row = {
+                "trial_type": trial["trial_type"],
+                "isRelevant": trial["isRelevant"],
+                "dateTime": trial["dateTime"],
+                "rt": trial["rt"],
+            }
             # add all of the key-value pairs in trial["response"] to row
             row.update(trial["response"])
             # write the row to the CSV file
