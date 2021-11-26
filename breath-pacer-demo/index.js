@@ -6,8 +6,8 @@
         {time: 7000, breathe: "hold"},
         {time: 10000, breathe: "out"},
     ];
-    const start = addBreathPacer(document.getElementById("demo-canvas"));
+    const start = addBreathPacer(document.getElementById("demo-canvas"), PATTERN);
     document.getElementById("demo-button").addEventListener("click", () => {
-        start(PATTERN);
+        start();
     });
 })();
