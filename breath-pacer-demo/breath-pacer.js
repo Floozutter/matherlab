@@ -34,13 +34,17 @@ function addBreathPacer(canvas, pattern, config = {}) {
         ...config,
     };
     // initialize state to before start of animation
+    let running = false;
     let startTime = null;
-    let interval = null;
     // define animation helpers
-    const draw = () => {
+    const draw = time => {
+        // set startTime if still unset while running
+        if (running && startTime === null) {
+            startTime = time;
+        }
         // compute coordinates of guide
         const guide = (() => {
-            const t = startTime === null ? 0 : performance.now() - startTime;
+            const t = startTime === null ? 0 : time - startTime;
             const h = (() => {
                 // find nearest points enclosing t horizontally
                 const [left, right] = (() => {
@@ -86,21 +90,22 @@ function addBreathPacer(canvas, pattern, config = {}) {
         ctx.beginPath();
         ctx.arc(...view(guide), cfg.guideRadius, 0, 2*Math.PI);
         ctx.fill();
-        // clear interval if past track
-        if (guide.t > points[points.length-1].t) {
-            clearInterval(interval);
+        // request next frame if running and still on track
+        if (running && guide.t <= points[points.length-1].t) {
+            window.requestAnimationFrame(draw);
+        } else {
+            running = false;
         }
     };
     const start = () => {
         // set state to start of animation
-        startTime = performance.now();
-        // start interval
-        interval = setInterval(() => {
-            draw();
-        }, cfg.delay);
+        running = true;
+        startTime = null;
+        // start drawing
+        window.requestAnimationFrame(draw);
     };
     // draw once to fill canvas
-    draw();
+    window.requestAnimationFrame(draw);
     // return callback to start animation
     return start;
 }
