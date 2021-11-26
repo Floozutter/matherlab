@@ -25,12 +25,20 @@ function addBreathPacer(canvas, pattern, config = {}) {
     // create drawing configuration from defaults and config parameter
     const cfg = {
         delay: 1000/60,
-        scaleT: 1/10,
-        scaleH: 400,
+        guideFillStyle: "Gold",
+        guideRadius: 30,
         offsetX: (2/5)*canvas.width,
         offsetY: (4/5)*canvas.height,
-        guideRadius: 30,
         rulerHeight: -0.2,
+        rulerLineCap: "butt",
+        rulerLineWidth: 10,
+        rulerStrokeStyle: "RoyalBlue",
+        scaleH: 400,
+        scaleT: 1/10,
+        trackLineCap: "round",
+        trackLineJoin: "round",
+        trackLineWidth: 10,
+        trackStrokeStyle: "SeaGreen",
         ...config,
     };
     // initialize state to before start of animation
@@ -76,11 +84,18 @@ function addBreathPacer(canvas, pattern, config = {}) {
         ctx.clearRect(0, 0, canvas.width, canvas.height);
         // draw ruler
         ctx.beginPath();
+        ctx.lineCap = cfg.rulerLineCap;
+        ctx.lineWidth = cfg.rulerLineWidth;
+        ctx.strokeStyle = cfg.rulerStrokeStyle;
         ctx.moveTo(...view({t: 0, h: cfg.rulerHeight}));
         ctx.lineTo(...view({t: points[points.length-1].t, h: cfg.rulerHeight}));
         ctx.stroke();
         // draw track
         ctx.beginPath();
+        ctx.lineCap = cfg.trackLineCap;
+        ctx.lineJoin = cfg.trackLineJoin;
+        ctx.lineWidth = cfg.trackLineWidth;
+        ctx.strokeStyle = cfg.trackStrokeStyle;
         ctx.moveTo(...view(points[0]));
         for (const point of points.slice(1)) {
             ctx.lineTo(...view(point));
@@ -88,6 +103,7 @@ function addBreathPacer(canvas, pattern, config = {}) {
         ctx.stroke();
         // draw guide
         ctx.beginPath();
+        ctx.fillStyle = cfg.guideFillStyle;
         ctx.arc(...view(guide), cfg.guideRadius, 0, 2*Math.PI);
         ctx.fill();
         // request next frame if running and still on track
