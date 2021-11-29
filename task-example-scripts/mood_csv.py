@@ -1,8 +1,8 @@
 import json
 import csv
 
-MOOD_DATA_PATH = "example-data/mood-prediction.json"
-OUTPUT_CSV_PATH = "output-csv/mood-prediction.csv"
+MOOD_DATA_PATH = "example-data/mood-memory.json"
+OUTPUT_CSV_PATH = "output-csv/mood-memory.csv"
 
 with open(MOOD_DATA_PATH) as datafile:
     datatext = datafile.read()
@@ -33,6 +33,15 @@ with open(OUTPUT_CSV_PATH, "w") as csvfile:
                 "isRelevant": trial["isRelevant"],
                 "dateTime": trial["dateTime"],
             }
-            for record in trial["response"]:
-                row[record["field"]] = record["value"]
+            response = trial["response"]
+            if isinstance(response, dict):
+                # response is in updated format (variable-size dict)
+                row.update(response)
+            elif isinstance(response, list):
+                # response is in old format (homogenous array of fixed-key dicts)
+                for record in response:
+                    row[record["field"]] = record["value"]
+            else:
+                # something terrible has happened
+                raise AssertionError("unexpected response type")
             writer.writerow(row)
