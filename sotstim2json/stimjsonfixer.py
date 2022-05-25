@@ -29,7 +29,7 @@ def main(badpath: Path, fixedpath: Path) -> None:
                 for setn, setv in bad["pre"]["main"].items()
             },
             **{
-                str(int(setn) + len(bad["pre"]["main"])): no_n(setv)
+                str(int(setn) + 6): no_n(setv)  # DANGER!!!
                 for setn, setv in bad["post"]["main"].items()
             },
         }
